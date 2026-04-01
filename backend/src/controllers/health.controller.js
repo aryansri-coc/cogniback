@@ -99,7 +99,7 @@ const syncHealthData = async (req, res) => {
       };
 
       const mlResponse = await axios.post(
-  `${ML_SERVICE_URL}/health/assess-risk`,
+  `${ML_SERVICE_URL}/assess-risk`,
   mlPayload,
   { timeout: 10000 }
 );
