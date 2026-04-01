@@ -2,8 +2,7 @@ const prisma = require("../config/prisma");
 const axios = require("axios");
 
 const ML_SERVICE_URL =
-  process.env.ML_SERVICE_URL ||
-  "https://industrious-wonder-production-8960.up.railway.app";
+  process.env.ML_SERVICE_URL;
 
 const syncHealthData = async (req, res) => {
   try {
