@@ -1,6 +1,6 @@
-# app.py
-# Drop this in your ML project root (cognify-back/)
-# Run: python app.py
+# app.py — Cognify ML Service (Production Ready)
+# Deploy on Railway with:
+#   uvicorn app:app --host 0.0.0.0 --port $PORT
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
@@ -16,26 +16,21 @@ logger = get_logger()
 
 app = FastAPI(title="Cognify ML Service", version="1.0.0")
 
-# Load once at startup
+# ─── Load models once at startup ─────────────────────────────────────────────
 engine = RiskEngine(calibration_path="models/calibration_params.json")
 builder = ResponseBuilder()
 
-
 # ─── Request schema ───────────────────────────────────────────────────────────
-
 class AssessRequest(BaseModel):
     user_id: str
     age: int
     sex: str          # "male" | "female"
     records: List[Dict[str, Any]]
 
-
 # ─── Routes ───────────────────────────────────────────────────────────────────
-
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
-
 
 @app.post("/assess-risk")
 def assess_risk(req: AssessRequest):
@@ -47,10 +42,8 @@ def assess_risk(req: AssessRequest):
             sex=req.sex,
             user_id=req.user_id,
         )
-
         # Step 2: Format into the structured response
         response = builder.build_response(risk_assessment=risk_result)
-
         return response
 
     except ValueError as e:
@@ -61,11 +54,12 @@ def assess_risk(req: AssessRequest):
         logger.error(f"Unhandled error: {e}")
         raise HTTPException(status_code=500, detail="Internal ML error")
 
-
+# ─── Entry point ──────────────────────────────────────────────────────────────
 if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
     uvicorn.run(
         "app:app",
         host="0.0.0.0",
-        port=8000,
-        reload=True
+        port=port,
+        reload=False,    # disabled for production
     )
