@@ -1,0 +1,62 @@
+const router = require("express").Router();
+const { verifyToken } = require("../middleware/auth.middleware");
+const prisma = require("../config/prisma");
+
+// GET /api/user/me — fetch current user profile
+router.get("/me", verifyToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id:        true,
+        email:     true,
+        name:      true,
+        age:       true,
+        sex:       true,
+        createdAt: true,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ status: "success", data: user });
+  } catch (error) {
+    console.error("GET /user/me ERROR:", error);
+    res.status(500).json({ message: "Failed to fetch user profile", error: error.message });
+  }
+});
+
+// PATCH /api/user/me — update age and/or sex
+router.patch("/me", verifyToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { age, sex, name } = req.body;
+
+    const updated = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        ...(age  !== undefined && { age:  parseInt(age) }),
+        ...(sex  !== undefined && { sex }),
+        ...(name !== undefined && { name }),
+      },
+      select: {
+        id:    true,
+        email: true,
+        name:  true,
+        age:   true,
+        sex:   true,
+      },
+    });
+
+    res.json({ status: "success", data: updated });
+  } catch (error) {
+    console.error("PATCH /user/me ERROR:", error);
+    res.status(500).json({ message: "Failed to update user profile", error: error.message });
+  }
+});
+
+module.exports = router;

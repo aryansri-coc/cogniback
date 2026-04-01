@@ -1,0 +1,167 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  USER
+  CAREGIVER
+}
+
+model User {
+  id            String          @id @default(uuid())
+  name          String
+  email         String          @unique
+  password      String
+  role          Role            @default(USER)
+  age           Int?
+  sex           String?
+  createdAt     DateTime        @default(now())
+  healthData    HealthData[]
+  predictions   AiPrediction[]
+  reports       Report[]
+  exerciseSessions ExerciseSession[]
+  medicineReminders MedicineReminder[]
+  emergencyContacts EmergencyContact[]
+  passwordResets    PasswordReset[]
+  careProviders     CareProvider[]
+  patientsAsCaregiver   CaregiverPatient[] @relation("CaregiverRelation")
+  caregiversAsPatient   CaregiverPatient[] @relation("PatientRelation")
+}
+
+model CaregiverPatient {
+  id          String   @id @default(uuid())
+  caregiver   User     @relation("CaregiverRelation", fields: [caregiverId], references: [id])
+  caregiverId String
+  patient     User     @relation("PatientRelation", fields: [patientId], references: [id])
+  patientId   String
+  assignedAt  DateTime @default(now())
+  @@unique([caregiverId, patientId])
+}
+
+model HealthData {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  timestamp DateTime
+  steps                Int?
+  heartRateAvg         Int?
+  hrvSdnnMs            Float?
+  bloodOxygenAvg       Float?
+  gaitSpeedMs          Float?
+  stepCadence          Int?
+  walkingAsymmetry     Float?
+  totalSleepHours      Float?
+  deepSleepHours       Float?
+  remSleepHours        Float?
+  latencyMinutes       Int?
+  awakenings           Int?
+  reactionTimeMs       Int?
+  memoryScore          Int?
+  testType             String?
+  createdAt DateTime @default(now())
+}
+
+model Report {
+  id           String   @id @default(uuid())
+  userId       String
+  type         String
+  status       String   @default("pending")
+  periodStart  DateTime
+  periodEnd    DateTime
+  fileUrl      String?
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id])
+}
+
+model AiPrediction {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  cognitiveIndex            Int?
+  healthStatus              String?
+  statusColor               String?
+  stabilityScore            Float?
+  fatigueRisk               String?
+  neuroDeclineProbability   Float?
+  anomalies                 Json?
+  aiInsights                Json?
+  modelVersion              String?
+  createdAt DateTime @default(now())
+}
+
+model WordGame {
+  id         String @id @default(uuid())
+  word       String
+  hint       String
+  category   String
+  difficulty String @default("medium")
+}
+
+model RecallQuiz {
+  id        String @id @default(uuid())
+  story     String
+  questions Json
+}
+
+model ExerciseSession {
+  id        String   @id @default(uuid())
+  userId    String
+  gameType  String
+  gameId    String?
+  score     Int      @default(0)
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user User @relation(fields: [userId], references: [id])
+}
+
+model PasswordReset {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user User @relation(fields: [userId], references: [id])
+}
+
+model MedicineReminder {
+  id          String    @id @default(uuid())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+  name        String
+  dosage      String?
+  frequency   String?
+  time        String?
+  status      String    @default("PENDING")
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+}
+
+model EmergencyContact {
+  id           String   @id @default(uuid())
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String
+  name         String
+  relationship String?
+  phoneNumber  String
+  imageUrl     String?
+  createdAt    DateTime @default(now())
+}
+
+model CareProvider {
+  id           String   @id @default(uuid())
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String
+  name         String
+  specialty    String?
+  email        String?
+  phoneNumber  String?
+  hospitalName String?
+  imageUrl     String?
+  createdAt    DateTime @default(now())
+}

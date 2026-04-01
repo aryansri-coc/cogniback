@@ -1,0 +1,76 @@
+{
+  "age_bins": {
+    "18-30": {
+      "male": {
+        "hrvSdnnMs": {"mean": 55, "std": 12, "annual_slope": -0.3},
+        "heartRateAvg": {"mean": 68, "std": 8, "annual_slope": 0.15},
+        "gaitSpeedMs": {"mean": 1.35, "std": 0.15, "annual_slope": -0.01},
+        "steps": {"mean": 8500, "std": 2000, "annual_slope": -150},
+        "bloodOxygenAvg": {"mean": 98.5, "std": 0.8, "annual_slope": -0.02},
+        "deepSleepHours": {"mean": 1.8, "std": 0.4, "annual_slope": -0.02},
+        "remSleepHours": {"mean": 1.5, "std": 0.3, "annual_slope": -0.01},
+        "reactionTimeMs": {"mean": 220, "std": 30, "annual_slope": 3.0},
+        "memoryScore": {"mean": 85, "std": 10, "annual_slope": -0.3}
+      },
+      "female": {
+        "hrvSdnnMs": {"mean": 60, "std": 13, "annual_slope": -0.3},
+        "heartRateAvg": {"mean": 72, "std": 9, "annual_slope": 0.15},
+        "gaitSpeedMs": {"mean": 1.30, "std": 0.14, "annual_slope": -0.01},
+        "steps": {"mean": 7800, "std": 1900, "annual_slope": -150},
+        "bloodOxygenAvg": {"mean": 98.5, "std": 0.8, "annual_slope": -0.02},
+        "deepSleepHours": {"mean": 1.7, "std": 0.4, "annual_slope": -0.02},
+        "remSleepHours": {"mean": 1.6, "std": 0.3, "annual_slope": -0.01},
+        "reactionTimeMs": {"mean": 210, "std": 28, "annual_slope": 3.0},
+        "memoryScore": {"mean": 87, "std": 9, "annual_slope": -0.3}
+      }
+    },
+    "40-50": {
+      "male": {
+        "hrvSdnnMs": {"mean": 48, "std": 10, "annual_slope": -0.5},
+        "heartRateAvg": {"mean": 70, "std": 8, "annual_slope": 0.2},
+        "gaitSpeedMs": {"mean": 1.30, "std": 0.14, "annual_slope": -0.02},
+        "steps": {"mean": 7500, "std": 1800, "annual_slope": -200},
+        "bloodOxygenAvg": {"mean": 98.2, "std": 0.9, "annual_slope": -0.05},
+        "deepSleepHours": {"mean": 1.5, "std": 0.4, "annual_slope": -0.03},
+        "remSleepHours": {"mean": 1.3, "std": 0.3, "annual_slope": -0.02},
+        "reactionTimeMs": {"mean": 250, "std": 35, "annual_slope": 5.0},
+        "memoryScore": {"mean": 80, "std": 11, "annual_slope": -0.5}
+      },
+      "female": {
+        "hrvSdnnMs": {"mean": 52, "std": 11, "annual_slope": -0.5},
+        "heartRateAvg": {"mean": 74, "std": 9, "annual_slope": 0.2},
+        "gaitSpeedMs": {"mean": 1.25, "std": 0.13, "annual_slope": -0.02},
+        "steps": {"mean": 7000, "std": 1700, "annual_slope": -200},
+        "bloodOxygenAvg": {"mean": 98.2, "std": 0.9, "annual_slope": -0.05},
+        "deepSleepHours": {"mean": 1.4, "std": 0.4, "annual_slope": -0.03},
+        "remSleepHours": {"mean": 1.4, "std": 0.3, "annual_slope": -0.02},
+        "reactionTimeMs": {"mean": 240, "std": 33, "annual_slope": 5.0},
+        "memoryScore": {"mean": 82, "std": 10, "annual_slope": -0.5}
+      }
+    },
+    "60-70": {
+      "male": {
+        "hrvSdnnMs": {"mean": 38, "std": 9, "annual_slope": -0.7},
+        "heartRateAvg": {"mean": 72, "std": 9, "annual_slope": 0.3},
+        "gaitSpeedMs": {"mean": 1.15, "std": 0.16, "annual_slope": -0.03},
+        "steps": {"mean": 6000, "std": 1500, "annual_slope": -300},
+        "bloodOxygenAvg": {"mean": 97.5, "std": 1.2, "annual_slope": -0.08},
+        "deepSleepHours": {"mean": 1.0, "std": 0.3, "annual_slope": -0.05},
+        "remSleepHours": {"mean": 1.0, "std": 0.3, "annual_slope": -0.03},
+        "reactionTimeMs": {"mean": 300, "std": 45, "annual_slope": 8.0},
+        "memoryScore": {"mean": 70, "std": 13, "annual_slope": -0.8}
+      },
+      "female": {
+        "hrvSdnnMs": {"mean": 42, "std": 10, "annual_slope": -0.7},
+        "heartRateAvg": {"mean": 76, "std": 10, "annual_slope": 0.3},
+        "gaitSpeedMs": {"mean": 1.10, "std": 0.15, "annual_slope": -0.03},
+        "steps": {"mean": 5500, "std": 1400, "annual_slope": -300},
+        "bloodOxygenAvg": {"mean": 97.5, "std": 1.2, "annual_slope": -0.08},
+        "deepSleepHours": {"mean": 0.9, "std": 0.3, "annual_slope": -0.05},
+        "remSleepHours": {"mean": 1.1, "std": 0.3, "annual_slope": -0.03},
+        "reactionTimeMs": {"mean": 290, "std": 42, "annual_slope": 8.0},
+        "memoryScore": {"mean": 72, "std": 12, "annual_slope": -0.8}
+      }
+    }
+  }
+}
