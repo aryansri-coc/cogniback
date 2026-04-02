@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { getReports, getReportById, generateReport } = require('../controllers/reportController');
-const authMiddleware = require('../middleware/authMiddleware'); // your existing JWT middleware
+const authMiddleware = require('../middleware/auth.Middleware'); // your existing JWT middleware
 
 router.use(authMiddleware);
 
