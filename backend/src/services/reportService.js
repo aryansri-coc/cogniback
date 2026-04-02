@@ -150,24 +150,3 @@ function computeAverages(records) {
 }
 
 module.exports = { generateAndStoreReport };
-```
-
----
-
-**What this does:**
-
-- Fetches all `HealthData` records for the user in the report period (7 or 14 days)
-- Sends **all of them** in one ML payload — this is what activates real anomaly detection
-- Computes averages from raw records as a bonus summary
-- Stores everything as JSON in `fileUrl` (we can move to a proper `content` column or PDF later)
-- Returns the `reportId` which the controller already sends back
-
----
-
-**Now test it in Postman:**
-```
-POST https://cogniback-production.up.railway.app/api/reports/generate
-Authorization: Bearer <your token>
-Content-Type: application/json
-
-{ "type": "weekly" }
