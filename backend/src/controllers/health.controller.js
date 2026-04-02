@@ -99,15 +99,15 @@ const syncHealthData = async (req, res) => {
       prisma.aiPrediction.create({
         data: {
           userId,
-          cognitiveIndex:          mlResult?.cognitiveIndex          ?? null,
-          healthStatus:            mlResult?.healthStatus            ?? null,
-          statusColor:             mlResult?.statusColor             ?? null,
-          stabilityScore:          mlResult?.predictions?.stabilityScore          ?? null,
-          fatigueRisk:             mlResult?.predictions?.fatigueRisk             ?? null,
-          neuroDeclineProbability: mlResult?.predictions?.neuroDeclineProbability ?? null,
-          anomalies:               mlResult?.anomalies  ?? [],
-          aiInsights:              mlResult?.aiInsights ?? [],
-          modelVersion:            mlResult?.modelVersion ?? null,
+          cognitiveIndex:          mlResult?.data?.cognitiveIndex                    ?? null,
+          healthStatus:            mlResult?.data?.healthStatus                      ?? null,
+          statusColor:             mlResult?.data?.statusColor                       ?? null,
+          stabilityScore:          mlResult?.data?.predictions?.stabilityScore       ?? null,
+          fatigueRisk:             mlResult?.data?.predictions?.fatigueRisk          ?? null,
+          neuroDeclineProbability: mlResult?.data?.predictions?.neuroDeclineProbability ?? null,
+          anomalies:               mlResult?.data?.anomalies  ?? [],
+          aiInsights:              mlResult?.data?.aiInsights ?? [],
+          modelVersion:            mlResult?.data?.modelVersion ?? null,
         },
       }).catch((e) => console.error("PREDICTION PERSIST ERROR:", e.message));
     }
@@ -115,6 +115,7 @@ const syncHealthData = async (req, res) => {
     return res.status(200).json({
       status: "success",
       data: {
+        // raw vitals
         steps:               data.vitals?.steps          ?? null,
         heartRateAvg:        data.vitals?.heartRateAvg   ?? null,
         hrvSdnnMs:           data.vitals?.hrvSdnnMs      ?? null,
@@ -128,13 +129,15 @@ const syncHealthData = async (req, res) => {
         sleepLatencyMinutes: latencyMinutes,
         sleepAwakenings:     awakenings,
 
-        cognitiveIndex:  mlResult?.cognitiveIndex  ?? null,
-        healthStatus:    mlResult?.healthStatus    ?? "Stable",
-        statusColor:     mlResult?.statusColor     ?? "#4CAF50",
-        predictions:     mlResult?.predictions     ?? {},
-        anomalies:       mlResult?.anomalies       ?? [],
-        aiInsights:      mlResult?.aiInsights      ?? [],
+        // ML results — nested under mlResult.data
+        cognitiveIndex:  mlResult?.data?.cognitiveIndex  ?? null,
+        healthStatus:    mlResult?.data?.healthStatus    ?? "Stable",
+        statusColor:     mlResult?.data?.statusColor     ?? "#4CAF50",
+        predictions:     mlResult?.data?.predictions     ?? {},
+        anomalies:       mlResult?.data?.anomalies       ?? [],
+        aiInsights:      mlResult?.data?.aiInsights      ?? [],
 
+        // meta
         lastSync:        healthRecord.timestamp.toISOString(),
         profileComplete,
         mlAvailable:     mlResult !== null,
