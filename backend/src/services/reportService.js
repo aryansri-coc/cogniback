@@ -9,11 +9,11 @@ async function generateAndStoreReport(userId, reportType) {
   const periodStart = new Date();
 
   if (reportType === "weekly") {
-    periodStart.setDate(periodEnd.getDate() -  7);
+    periodStart.setDate(periodEnd.getDate() -  90);
   } else if (reportType === "fortnightly") {
-    periodStart.setDate(periodEnd.getDate() -  14);
+    periodStart.setDate(periodEnd.getDate() -  90);
   } else {
-    periodStart.setDate(periodEnd.getDate() -  30);
+    periodStart.setDate(periodEnd.getDate() -  90);
   }
 
   // 2. Fetch user profile
