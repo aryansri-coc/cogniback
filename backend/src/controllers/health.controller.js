@@ -96,7 +96,7 @@ const syncHealthData = async (req, res) => {
 
     // ── Persist ML prediction ─────────────────────────────────────────────
     if (mlResult) {
-      prisma.aiPrediction.create({
+      await prisma.aiPrediction.create({
         data: {
           userId,
           cognitiveIndex:          mlResult?.data?.cognitiveIndex                    ?? null,
