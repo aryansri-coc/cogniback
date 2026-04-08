@@ -22,7 +22,7 @@ router.get("/latest", verifyToken, async (req, res) => {
     });
 
     if (!latest) {
-      return res.status(404).json({ status: "error", message: "No health data found" });
+     return res.status(200).json({ status: "success", data: null, message: "No health data yet" });
     }
 
     return res.status(200).json({
