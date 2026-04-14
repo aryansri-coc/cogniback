@@ -3,8 +3,8 @@ const jwt = require("jsonwebtoken");
 exports.verifyToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
-  if (!authHeader) {
-    return res.status(401).json({ message: "No token provided" });
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ message: "No token provided", expired: false });
   }
 
   const token = authHeader.split(" ")[1];
@@ -14,6 +14,10 @@ exports.verifyToken = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (error) {
-    return res.status(401).json({ message: "Invalid token" });
+    const isExpired = error.name === "TokenExpiredError";
+    return res.status(401).json({
+      message: isExpired ? "Token expired" : "Invalid token",
+      expired: isExpired,   // frontend uses this flag to trigger refresh
+    });
   }
 };
