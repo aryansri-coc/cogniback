@@ -3,7 +3,7 @@ const router = express.Router();
 const prisma = require("../config/prisma");
 const { verifyToken } = require("../middleware/auth.middleware");
 
-// ── helpers ──────────────────────────────────────────────────────────────────
+// — helpers ——————————————————————————————————————————————————————————————————
 function buildContent(type, game) {
   switch (type) {
     case "WORD_GAME":
@@ -17,11 +17,14 @@ function buildContent(type, game) {
         sequence: Array.from({ length: 5 }, () => Math.floor(Math.random() * 9) + 1)
       };
     case "RECALL_QUIZ":
-      const q = game.questions[0];
+      // FIX: Return the story and the full array of questions
       return {
-        question: q.question,
-        options:  q.options,
-        answer:   q.options[q.correct_index]
+        story:    game.story,
+        questions: game.questions.map(q => ({
+          question: q.question,
+          options:  q.options,
+          answer:   q.options[q.correct_index]
+        }))
       };
     case "VISUAL_PATTERNS":
       return {
@@ -38,16 +41,22 @@ router.get("/daily", verifyToken, async (req, res) => {
   try {
     const userId = req.user.userId;
 
-    const wordGame   = await prisma.wordGame.findFirst();
-    const recallQuiz = await prisma.recallQuiz.findFirst();
+    // Fetch all available games
+    const allWordGames = await prisma.wordGame.findMany();
+    const allQuizzes   = await prisma.recallQuiz.findMany();
 
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);
 
+    // Check what the user has already finished today
     const completedToday = await prisma.exerciseSession.findMany({
       where: { userId, completed: true, createdAt: { gte: startOfDay } }
     });
     const completedIds = new Set(completedToday.map(s => s.gameId));
+
+    // PROGRESSION LOGIC: Pick the first game that hasn't been completed yet
+    const wordGame = allWordGames.find(g => !completedIds.has(g.id)) || allWordGames[0];
+    const recallQuiz = allQuizzes.find(q => !completedIds.has(q.id)) || allQuizzes[0];
 
     const exercises = [
       { id: wordGame?.id   ?? "wg_001",  type: "WORD_GAME",        isCompleted: completedIds.has(wordGame?.id) },
@@ -57,7 +66,7 @@ router.get("/daily", verifyToken, async (req, res) => {
     ];
 
     const completedCount = exercises.filter(e => e.isCompleted).length;
-    const goalProgress   = completedCount / exercises.length;
+    const goalProgress   = exercises.length > 0 ? completedCount / exercises.length : 0;
 
     return res.status(200).json({ goalProgress, exercises });
   } catch (error) {
@@ -79,7 +88,6 @@ router.get("/:id", verifyToken, async (req, res) => {
       where: { userId, gameId: id, completed: true, createdAt: { gte: startOfDay } }
     });
 
-    // Determine type from id prefix or DB lookup
     let type, content;
 
     if (id.startsWith("seq_") || id === "seq_001") {
@@ -89,13 +97,11 @@ router.get("/:id", verifyToken, async (req, res) => {
       type    = "VISUAL_PATTERNS";
       content = buildContent(type, {});
     } else {
-      // Try WordGame
       const wordGame = await prisma.wordGame.findUnique({ where: { id } });
       if (wordGame) {
         type    = "WORD_GAME";
         content = buildContent(type, wordGame);
       } else {
-        // Try RecallQuiz
         const quiz = await prisma.recallQuiz.findUnique({ where: { id } });
         if (quiz) {
           type    = "RECALL_QUIZ";
